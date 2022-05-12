@@ -1,2 +1,0 @@
-Docker db:
-docker run -d --rm --name mariadb --network host --env MARIADB_DATABASE=security_demo --env MARIADB_USER=dev --env MARIADB_PASSWORD=secret --env MARIADB_ROOT_PASSWORD=secret  mariadb:latest
