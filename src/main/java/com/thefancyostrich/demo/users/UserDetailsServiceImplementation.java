@@ -35,6 +35,10 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
         userRepository.save(user);
     }
 
+    public void loginUser(String username, String password) {
+
+    }
+
     /**
      * Promote existing user to moderator.
      * Possible endpoint should be locked behind admin.

@@ -59,8 +59,7 @@ public class UserController {
         if (body.has("username") && body.has("password")) {
             String username = body.get("username").textValue();
             String password = body.get("password").textValue();
-            username += password;
-            password += username;
+            userService.loginUser(username, password);
         } else {
             throw new IllegalStateException("Invalid request.");
         }
