@@ -1,5 +1,7 @@
 package com.thefancyostrich.demo.users;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -45,6 +47,7 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
         if (user.getRole() == UserRole.ADMIN) {
             throw new IllegalStateException("Cannot demote ADMIN");
         }
+        user.setRole(UserRole.MODERATOR);
         userRepository.save(user);
 
     }
@@ -56,6 +59,10 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
             }
         }
         userRepository.save(new User(username, passwordEncoder.encode(password), UserRole.ADMIN));
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
 }

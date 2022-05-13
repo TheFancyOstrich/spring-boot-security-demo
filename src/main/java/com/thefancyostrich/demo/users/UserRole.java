@@ -10,9 +10,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import static com.thefancyostrich.demo.users.UserPermission.*;
 
 public enum UserRole {
-    USER(TEST_USER),
-    MODERATOR(TEST_USER, TEST_MODERATOR),
-    ADMIN(TEST_USER, TEST_MODERATOR, TEST_ADMIN);
+    USER(),
+    MODERATOR(USER_READ),
+    ADMIN(USER_MODIFY, USER_READ);
 
     private final Set<UserPermission> permissions;
 
