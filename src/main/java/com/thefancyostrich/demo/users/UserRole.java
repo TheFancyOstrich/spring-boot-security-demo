@@ -1,6 +1,7 @@
 package com.thefancyostrich.demo.users;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,5 +35,10 @@ public enum UserRole {
                 .collect(Collectors.toSet());
         permissions.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return permissions;
+    }
+
+    public List<String> getGrantedAuthoritiesAsStrings() {
+        getGrantedAuthorities().stream().map(s -> s.getAuthority());
+        return getGrantedAuthorities().stream().map(s -> s.getAuthority()).collect(Collectors.toList());
     }
 }

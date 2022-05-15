@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    UserDetailsServiceImplementation userService;
+    UserService userService;
 
     /**
      * To register a user the body should be of the form
@@ -55,11 +55,11 @@ public class UserController {
      * @param body
      */
     @PostMapping("/login")
-    public void login(@RequestBody JsonNode body) {
+    public String login(@RequestBody JsonNode body) {
         if (body.has("username") && body.has("password")) {
             String username = body.get("username").textValue();
             String password = body.get("password").textValue();
-            userService.loginUser(username, password);
+            return userService.loginUser(username, password);
         } else {
             throw new IllegalStateException("Invalid request.");
         }

@@ -1,6 +1,6 @@
 package com.thefancyostrich.demo;
 
-import com.thefancyostrich.demo.users.UserDetailsServiceImplementation;
+import com.thefancyostrich.demo.users.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -13,7 +13,7 @@ public class UserLoader implements ApplicationRunner {
      * Add some users. Should not be used in production.
      */
     @Autowired
-    UserDetailsServiceImplementation userService;
+    UserService userService;
 
     @Override
     public void run(ApplicationArguments args) {
