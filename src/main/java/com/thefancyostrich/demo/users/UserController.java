@@ -3,8 +3,10 @@ package com.thefancyostrich.demo.users;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.thefancyostrich.demo.exceptions.ToHttpException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +42,7 @@ public class UserController {
             String token = userService.registerUser(username, password);
             return new LoginResponse(username, token);
         } else {
-            throw new IllegalStateException("Invalid request.");
+            throw new ToHttpException("Must provide both username and password", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -62,7 +64,7 @@ public class UserController {
             String password = body.get("password").textValue();
             return new LoginResponse(username, userService.loginUser(username, password));
         } else {
-            throw new IllegalStateException("Invalid request.");
+            throw new ToHttpException("Must provide both username and password", HttpStatus.BAD_REQUEST);
         }
     }
 

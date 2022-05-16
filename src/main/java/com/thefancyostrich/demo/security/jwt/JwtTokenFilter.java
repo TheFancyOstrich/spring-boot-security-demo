@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thefancyostrich.demo.exceptions.ToHttpException;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,18 +29,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String token = provider.extractToken(request);
         try {
-            if (token != null && provider.validateToken(token)) {
+            boolean valid = (token != null && provider.validateToken(token));
+            if (valid) {
                 Authentication auth = provider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);
+
             }
-        } catch (Exception ex) {
+        } catch (ToHttpException ex) {
             SecurityContextHolder.clearContext();
-            // httpServletResponse.sendError(ex.getHttpStatus().value(), ex.getMessage());
-            ex.printStackTrace();
-            throw new IllegalStateException("LOOK HERE TO IMPLEMENT PROPER HTTP ERROS!!!");
+            response.sendError(ex.getHttpStatus().value(), ex.getMessage());
+            return;
 
         }
 
         filterChain.doFilter(request, response);
+
     }
 }

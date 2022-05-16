@@ -4,11 +4,13 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.thefancyostrich.demo.exceptions.ToHttpException;
 import com.thefancyostrich.demo.security.UserFinderService;
 import com.thefancyostrich.demo.users.UserRole;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -100,6 +102,7 @@ public class JwtTokenProvider {
      * 
      * @param token
      * @return
+     * @throws ToHttpException At invalid JWT.
      */
 
     public boolean validateToken(String token) {
@@ -107,7 +110,7 @@ public class JwtTokenProvider {
             Jwts.parser().setSigningKey(securityKey).parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            throw new IllegalStateException("Invalid JWT token.");
+            throw new ToHttpException("Invalid or expired JWT token.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
