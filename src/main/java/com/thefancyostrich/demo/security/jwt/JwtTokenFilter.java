@@ -11,6 +11,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/**
+ * The filter configured in spring security that checks the existence and
+ * validity of JWT tokens.
+ */
 public class JwtTokenFilter extends OncePerRequestFilter {
     private JwtTokenProvider provider;
 
@@ -30,6 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         } catch (Exception ex) {
             SecurityContextHolder.clearContext();
             // httpServletResponse.sendError(ex.getHttpStatus().value(), ex.getMessage());
+            ex.printStackTrace();
             throw new IllegalStateException("LOOK HERE TO IMPLEMENT PROPER HTTP ERROS!!!");
 
         }

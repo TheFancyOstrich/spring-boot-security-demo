@@ -33,11 +33,12 @@ public class UserController {
      * @param body
      */
     @PostMapping("/register")
-    public void registerUser(@RequestBody JsonNode body) {
+    public LoginResponse registerUser(@RequestBody JsonNode body) {
         if (body.has("username") && body.has("password")) {
             String username = body.get("username").textValue();
             String password = body.get("password").textValue();
-            userService.registerUser(username, password);
+            String token = userService.registerUser(username, password);
+            return new LoginResponse(username, token);
         } else {
             throw new IllegalStateException("Invalid request.");
         }
@@ -55,11 +56,11 @@ public class UserController {
      * @param body
      */
     @PostMapping("/login")
-    public String login(@RequestBody JsonNode body) {
+    public LoginResponse login(@RequestBody JsonNode body) {
         if (body.has("username") && body.has("password")) {
             String username = body.get("username").textValue();
             String password = body.get("password").textValue();
-            return userService.loginUser(username, password);
+            return new LoginResponse(username, userService.loginUser(username, password));
         } else {
             throw new IllegalStateException("Invalid request.");
         }
@@ -75,6 +76,15 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:read')")
     public List<User> getAll() {
         return userService.getAllUsers();
+    }
+
+    class LoginResponse {
+        public String username, token;
+
+        public LoginResponse(String username, String token) {
+            this.username = username;
+            this.token = token;
+        }
     }
 
 }

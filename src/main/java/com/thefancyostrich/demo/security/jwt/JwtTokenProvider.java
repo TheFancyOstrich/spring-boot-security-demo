@@ -4,8 +4,11 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.thefancyostrich.demo.users.UserService;
+import com.thefancyostrich.demo.security.UserFinderService;
 import com.thefancyostrich.demo.users.UserRole;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,12 +22,18 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtTokenProvider {
 
-    // Should be configured in a secure manner
-    private String securityKey = "SecrEt";
+    @Value("${jwt.secret}")
+    private String securityKey;
 
-    private long validityInMilliseconds = 10800000; // 3h
+    @Value("${jwt.validityTime}")
+    private long validityInMilliseconds;
 
-    private UserService userService;
+    private final UserFinderService userFinderService;
+
+    @Autowired
+    public JwtTokenProvider(UserFinderService userFinderService) {
+        this.userFinderService = userFinderService;
+    }
 
     /**
      * Create a new token for an authenticated user.
@@ -55,7 +64,8 @@ public class JwtTokenProvider {
      * @return The authentication
      */
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userService.loadUserByUsername(getUsername(token));
+        UserDetails userDetails = userFinderService.loadUserByUsername(getUsername(token));
+
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -79,7 +89,7 @@ public class JwtTokenProvider {
     public String extractToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.split(" ")[0];
+            return bearerToken.split(" ")[1];
         }
         return null;
     }
